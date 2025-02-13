@@ -23,21 +23,7 @@ export const useMedicationForm = () => {
   });
 
   const calculateRecommendedTimes = () => {
-    const hoursBetween = parseInt(formData.hoursBetween);
-    if (!hoursBetween) return;
-
-    const recommendations = [
-      [8, (8 + hoursBetween) % 24, (8 + 2 * hoursBetween) % 24],
-      [14, (14 + hoursBetween) % 24, (14 + 2 * hoursBetween) % 24],
-      [20, (20 + hoursBetween) % 24, (20 + 2 * hoursBetween) % 24]
-    ];
-
-    const timeSlots: TimeSlot[] = recommendations.map(times => ({
-      time: times.map(t => `${t.toString().padStart(2, '0')}:00`).join(', '),
-      selected: false
-    }));
-
-    setRecommendedTimes(timeSlots);
+    // This is now handled directly in the TimeSelectionStep component
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,8 +70,8 @@ export const useMedicationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!recommendedTimes.some(t => t.selected)) {
-      toast.error("Please select a time schedule");
+    if (recommendedTimes.length === 0) {
+      toast.error("Please set a time schedule");
       return;
     }
 
@@ -113,15 +99,14 @@ export const useMedicationForm = () => {
         imageUrl = publicUrl;
       }
 
-      const selectedSchedule = recommendedTimes.find(t => t.selected);
-      const timeOfDay = selectedSchedule?.time.split(', ') || [];
+      const selectedSchedule = recommendedTimes[0];
 
       const { error: insertError } = await supabase
         .from('medications')
         .insert({
           name: formData.name,
           frequency: `Every ${formData.hoursBetween} hours`,
-          time_of_day: timeOfDay,
+          time_of_day: [selectedSchedule.time],
           user_id: user.id,
           image_url: imageUrl,
           reminder_enabled: remindersEnabled,

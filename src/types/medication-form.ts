@@ -2,6 +2,7 @@
 export interface TimeSlot {
   time: string;
   selected: boolean;
+  days: string[];
 }
 
 export interface MedicationFormData {
