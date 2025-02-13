@@ -6,14 +6,53 @@ import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { MedicationList } from "@/components/dashboard/MedicationList";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [medications, setMedications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+  const { toast: shadowToast } = useToast();
   const navigate = useNavigate();
+
+  // Subscribe to reminder history updates
+  useEffect(() => {
+    const reminderChannel = supabase
+      .channel('reminder_history')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'reminder_history'
+        },
+        async (payload) => {
+          const { data: reminder } = await supabase
+            .from('medications')
+            .select('name')
+            .eq('id', payload.new.medication_id)
+            .single();
+
+          if (reminder) {
+            if (payload.new.status === 'success') {
+              toast.success(`Reminder sent for ${reminder.name}`, {
+                description: `${payload.new.type.toUpperCase()} reminder was delivered successfully.`
+              });
+            } else {
+              toast.error(`Failed to send reminder for ${reminder.name}`, {
+                description: payload.new.error_message || `${payload.new.type.toUpperCase()} reminder failed to deliver.`
+              });
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(reminderChannel);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -40,7 +79,7 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        toast({
+        shadowToast({
           variant: "destructive",
           title: "Error",
           description: "Failed to load your data. Please try again.",
@@ -51,7 +90,7 @@ const Dashboard = () => {
     };
 
     fetchUserData();
-  }, [toast]);
+  }, [shadowToast]);
 
   const handleEdit = (id: string) => {
     navigate(`/dashboard/edit/${id}`);
@@ -67,16 +106,13 @@ const Dashboard = () => {
       if (error) throw error;
 
       setMedications(medications.filter((med: any) => med.id !== id));
-      toast({
-        title: "Success",
-        description: "Medication deleted successfully.",
+      toast.success("Medication deleted", {
+        description: "The medication has been successfully removed from your list."
       });
     } catch (error) {
       console.error('Error deleting medication:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete medication. Please try again.",
+      toast.error("Failed to delete medication", {
+        description: "An error occurred while trying to delete the medication. Please try again."
       });
     }
   };

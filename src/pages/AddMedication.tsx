@@ -6,12 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 const AddMedication = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -28,6 +27,12 @@ const AddMedication = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image too large", {
+          description: "Please select an image smaller than 5MB."
+        });
+        return;
+      }
       setImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -41,6 +46,8 @@ const AddMedication = () => {
     e.preventDefault();
     setLoading(true);
 
+    const toastId = toast.loading("Adding medication...");
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
@@ -53,7 +60,12 @@ const AddMedication = () => {
           .from('medication_images')
           .upload(fileName, image);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          toast.error("Failed to upload image", {
+            description: uploadError.message
+          });
+          throw uploadError;
+        }
         
         const { data: { publicUrl } } = supabase.storage
           .from('medication_images')
@@ -87,17 +99,16 @@ const AddMedication = () => {
 
       if (insertError) throw insertError;
 
-      toast({
-        title: "Success",
-        description: "Medication added successfully!",
+      toast.success("Medication added", {
+        description: `${formData.name} has been added to your medications.`,
+        id: toastId
       });
       navigate("/dashboard");
     } catch (error) {
       console.error('Error adding medication:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to add medication. Please try again.",
+      toast.error("Failed to add medication", {
+        description: "An error occurred while adding your medication. Please try again.",
+        id: toastId
       });
     } finally {
       setLoading(false);
