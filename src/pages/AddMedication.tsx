@@ -144,18 +144,20 @@ const AddMedication = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Button
+        onClick={() => navigate(-1)}
+        variant="ghost"
+        size="sm"
+        className="fixed top-4 right-4 z-50"
+      >
+        Back
+      </Button>
       <div className="flex h-screen">
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-2xl mx-auto space-y-8">
             <div className="flex justify-between items-center md:mt-0 mt-8">
               <h1 className="text-3xl font-bold md:ml-0 ml-12">Add Medication</h1>
-              <Button
-                onClick={() => navigate("/dashboard")}
-                variant="outline"
-              >
-                Back to Dashboard
-              </Button>
             </div>
 
             <motion.div className="flex justify-between mb-8">
