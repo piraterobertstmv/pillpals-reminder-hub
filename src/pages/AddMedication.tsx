@@ -53,10 +53,12 @@ const AddMedication = () => {
       [20, (20 + hoursBetween) % 24, (20 + 2 * hoursBetween) % 24]
     ];
 
-    setRecommendedTimes(recommendations.map(times => ({
-      times: times.map(t => `${t.toString().padStart(2, '0')}:00`).join(', '),
+    const timeSlots: TimeSlot[] = recommendations.map(times => ({
+      time: times.map(t => `${t.toString().padStart(2, '0')}:00`).join(', '),
       selected: false
-    })));
+    }));
+
+    setRecommendedTimes(timeSlots);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,15 +137,12 @@ const AddMedication = () => {
       }
 
       const selectedSchedule = recommendedTimes.find(t => t.selected);
-      const timeOfDay = selectedSchedule?.times.split(', ') || [];
+      const timeOfDay = selectedSchedule?.time.split(', ') || [];
 
       // Calculate duration in days
       let durationDays = parseInt(formData.duration);
       if (formData.durationType === 'weeks') durationDays *= 7;
       if (formData.durationType === 'months') durationDays *= 30;
-
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() + durationDays);
 
       const { error: insertError } = await supabase
         .from('medications')
@@ -154,13 +153,13 @@ const AddMedication = () => {
           user_id: user.id,
           image_url: imageUrl,
           reminder_enabled: remindersEnabled,
-          end_date: endDate.toISOString(),
-          duration_days: durationDays
+          dosage: '1 pill', // Default dosage
+          notes: null,
+          next_reminder: null
         });
 
       if (insertError) throw insertError;
 
-      // Trigger confetti after successful submission
       triggerConfetti();
 
       toast.success("Medication added", {
@@ -168,7 +167,6 @@ const AddMedication = () => {
         id: toastId
       });
       
-      // Add slight delay before navigation to show the confetti
       setTimeout(() => {
         navigate("/dashboard");
       }, 1500);
@@ -216,7 +214,7 @@ const AddMedication = () => {
           {showPreview && (
             <SchedulePreview
               name={formData.name}
-              times={selectedSchedule ? selectedSchedule.times.split(', ') : []}
+              times={selectedSchedule ? selectedSchedule.time.split(', ') : []}
               duration={formData.duration}
               durationType={formData.durationType}
             />
@@ -373,7 +371,7 @@ const AddMedication = () => {
                                 })));
                               }}
                             >
-                              {slot.times}
+                              {slot.time}
                             </Button>
                           ))}
                         </div>
