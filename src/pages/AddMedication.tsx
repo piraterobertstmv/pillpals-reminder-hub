@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,10 @@ const AddMedication = () => {
     name: "",
     timesPerDay: "",
     frequency: "",
+  });
+  const [reminders, setReminders] = useState({
+    enabled: true,
+    frequency: "daily",
   });
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -62,6 +67,10 @@ const AddMedication = () => {
         (_, i) => `${Math.floor(24 / (parseInt(formData.timesPerDay) || 1) * i)}:00`
       );
 
+      // Calculate next reminder time
+      const nextReminder = new Date();
+      nextReminder.setHours(nextReminder.getHours() + parseInt(formData.frequency));
+
       const { error: insertError } = await supabase
         .from('medications')
         .insert({
@@ -71,6 +80,9 @@ const AddMedication = () => {
           time_of_day: timeOfDay,
           user_id: user.id,
           image_url: imageUrl,
+          reminder_enabled: reminders.enabled,
+          reminder_frequency: reminders.frequency,
+          next_reminder: nextReminder.toISOString()
         });
 
       if (insertError) throw insertError;
@@ -166,6 +178,17 @@ const AddMedication = () => {
                       />
                     </div>
                   )}
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="reminders"
+                    checked={reminders.enabled}
+                    onCheckedChange={(checked) => 
+                      setReminders(prev => ({ ...prev, enabled: checked }))
+                    }
+                  />
+                  <Label htmlFor="reminders">Enable Reminders</Label>
                 </div>
               </div>
 

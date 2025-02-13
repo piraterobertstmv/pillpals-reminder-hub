@@ -17,7 +17,10 @@ export type Database = {
           id: string
           image_url: string | null
           name: string
+          next_reminder: string | null
           notes: string | null
+          reminder_enabled: boolean | null
+          reminder_frequency: string | null
           time_of_day: string[]
           updated_at: string
           user_id: string
@@ -29,7 +32,10 @@ export type Database = {
           id?: string
           image_url?: string | null
           name: string
+          next_reminder?: string | null
           notes?: string | null
+          reminder_enabled?: boolean | null
+          reminder_frequency?: string | null
           time_of_day: string[]
           updated_at?: string
           user_id: string
@@ -41,7 +47,10 @@ export type Database = {
           id?: string
           image_url?: string | null
           name?: string
+          next_reminder?: string | null
           notes?: string | null
+          reminder_enabled?: boolean | null
+          reminder_frequency?: string | null
           time_of_day?: string[]
           updated_at?: string
           user_id?: string
@@ -60,28 +69,78 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          email_reminder_enabled: boolean | null
           first_name: string | null
           id: string
           last_name: string | null
+          phone_number: string | null
+          sms_reminder_enabled: boolean | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           email?: string | null
+          email_reminder_enabled?: boolean | null
           first_name?: string | null
           id: string
           last_name?: string | null
+          phone_number?: string | null
+          sms_reminder_enabled?: boolean | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           email?: string | null
+          email_reminder_enabled?: boolean | null
           first_name?: string | null
           id?: string
           last_name?: string | null
+          phone_number?: string | null
+          sms_reminder_enabled?: boolean | null
           updated_at?: string
         }
         Relationships: []
+      }
+      reminder_history: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          medication_id: string | null
+          sent_at: string | null
+          status: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          medication_id?: string | null
+          sent_at?: string | null
+          status: string
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          medication_id?: string | null
+          sent_at?: string | null
+          status?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminder_history_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
