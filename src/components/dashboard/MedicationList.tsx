@@ -1,5 +1,5 @@
 
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, Bell, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -34,16 +34,16 @@ export const MedicationList = ({ medications, onEdit, onDelete }: MedicationList
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="w-full overflow-auto rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Dosage</TableHead>
-            <TableHead>Frequency</TableHead>
-            <TableHead>Time of Day</TableHead>
-            <TableHead>Next Reminder</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="min-w-[150px]">Name</TableHead>
+            <TableHead className="min-w-[100px]">Dosage</TableHead>
+            <TableHead className="min-w-[120px]">Frequency</TableHead>
+            <TableHead className="min-w-[150px]">Time of Day</TableHead>
+            <TableHead className="min-w-[200px]">Next Reminder</TableHead>
+            <TableHead className="min-w-[100px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -52,30 +52,55 @@ export const MedicationList = ({ medications, onEdit, onDelete }: MedicationList
               <TableCell className="font-medium">{medication.name}</TableCell>
               <TableCell>{medication.dosage}</TableCell>
               <TableCell>{medication.frequency}</TableCell>
-              <TableCell>{medication.time_of_day.join(", ")}</TableCell>
-              <TableCell>
-                {medication.reminder_enabled 
-                  ? formatNextReminder(medication.next_reminder)
-                  : 'Reminders disabled'}
+              <TableCell className="whitespace-nowrap">
+                {medication.time_of_day.join(", ")}
               </TableCell>
-              <TableCell className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(medication.id)}
-                >
-                  <Edit className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => onDelete(medication.id)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  {medication.reminder_enabled ? (
+                    <>
+                      <Bell className="h-4 w-4 text-green-500" />
+                      <span>{formatNextReminder(medication.next_reminder)}</span>
+                    </>
+                  ) : (
+                    <>
+                      <BellOff className="h-4 w-4 text-gray-400" />
+                      <span className="text-gray-500">Reminders disabled</span>
+                    </>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(medication.id)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit className="h-4 w-4" />
+                    <span className="sr-only">Edit medication</span>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDelete(medication.id)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete medication</span>
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}
+          {medications.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} className="h-24 text-center">
+                No medications found. Add your first medication to get started.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
