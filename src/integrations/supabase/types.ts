@@ -19,6 +19,7 @@ export type Database = {
           name: string
           next_reminder: string | null
           notes: string | null
+          reminder_days: string[] | null
           reminder_enabled: boolean | null
           reminder_frequency: string | null
           time_of_day: string[]
@@ -34,6 +35,7 @@ export type Database = {
           name: string
           next_reminder?: string | null
           notes?: string | null
+          reminder_days?: string[] | null
           reminder_enabled?: boolean | null
           reminder_frequency?: string | null
           time_of_day: string[]
@@ -49,6 +51,7 @@ export type Database = {
           name?: string
           next_reminder?: string | null
           notes?: string | null
+          reminder_days?: string[] | null
           reminder_enabled?: boolean | null
           reminder_frequency?: string | null
           time_of_day?: string[]

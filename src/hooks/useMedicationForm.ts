@@ -107,6 +107,7 @@ export const useMedicationForm = () => {
           name: formData.name,
           frequency: `Every ${formData.hoursBetween} hours`,
           time_of_day: [selectedSchedule.time],
+          reminder_days: selectedSchedule.days,
           user_id: user.id,
           image_url: imageUrl,
           reminder_enabled: remindersEnabled,
