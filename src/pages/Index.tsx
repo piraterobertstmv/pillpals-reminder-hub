@@ -1,4 +1,3 @@
-
 import { Bell, Calendar, CheckCircle, Layout, Phone, Pill } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -68,17 +67,11 @@ const Index = () => {
             <span className="text-2xl font-bold">PillTime</span>
           </div>
           <div className="flex gap-4 items-center">
-            <Link 
-              to="/auth" 
-              className="text-gray-600 hover:text-gray-900 font-medium"
-            >
-              Sign In
-            </Link>
             <Button 
               asChild 
               className="btn-coral"
             >
-              <Link to="/auth">Get Started</Link>
+              <Link to="/dashboard">Go to Dashboard</Link>
             </Button>
           </div>
         </div>
