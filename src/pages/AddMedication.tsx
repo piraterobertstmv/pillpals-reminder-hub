@@ -39,11 +39,6 @@ const AddMedication = () => {
     if (!hoursBetween) return;
 
     // Calculate 3 different time slot recommendations
-    const now = new Date();
-    const morning = new Date(now).setHours(8, 0, 0, 0);
-    const afternoon = new Date(now).setHours(14, 0, 0, 0);
-    const evening = new Date(now).setHours(20, 0, 0, 0);
-
     const recommendations = [
       // Morning start
       [8, (8 + hoursBetween) % 24, (8 + 2 * hoursBetween) % 24],
@@ -211,10 +206,10 @@ const AddMedication = () => {
     return (
       <div className="space-y-6">
         <AnimatePresence mode="wait">
-          {showPreview && (
+          {showPreview && selectedSchedule && (
             <SchedulePreview
               name={formData.name}
-              times={selectedSchedule ? selectedSchedule.time.split(', ') : []}
+              times={selectedSchedule.time.split(', ')}
               duration={formData.duration}
               durationType={formData.durationType}
             />
