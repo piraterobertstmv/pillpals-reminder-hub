@@ -1,5 +1,7 @@
 
 import { Bell, Calendar, CheckCircle, Layout, Phone, Pill } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const features = [
@@ -65,9 +67,19 @@ const Index = () => {
             <Pill className="w-8 h-8 text-primary" />
             <span className="text-2xl font-bold">PillTime</span>
           </div>
-          <div className="flex gap-4">
-            <a href="/auth" className="text-gray-600 hover:text-gray-900">Sign In</a>
-            <a href="/auth" className="btn-coral">Get Started</a>
+          <div className="flex gap-4 items-center">
+            <Link 
+              to="/auth" 
+              className="text-gray-600 hover:text-gray-900 font-medium"
+            >
+              Sign In
+            </Link>
+            <Button 
+              asChild 
+              className="btn-coral"
+            >
+              <Link to="/auth">Get Started</Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -83,7 +95,9 @@ const Index = () => {
             you'll always have your medications on time.
           </p>
           <div className="pt-4">
-            <a href="/auth" className="btn-coral">Get Started</a>
+            <Button asChild className="btn-coral">
+              <Link to="/auth">Get Started</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -164,7 +178,9 @@ const Index = () => {
           <p className="text-xl text-gray-600 mb-8">
             No downloads or installations needed. Start using PillTime from your browser right now!
           </p>
-          <a href="/auth" className="btn-coral">Get Started</a>
+          <Button asChild className="btn-coral">
+            <Link to="/auth">Get Started</Link>
+          </Button>
         </div>
       </section>
 
@@ -177,9 +193,9 @@ const Index = () => {
               <span className="text-xl font-bold">PillTime</span>
             </div>
             <div className="flex gap-6">
-              <a href="#" className="text-gray-600 hover:text-gray-900">Contact</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Privacy</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Terms</a>
+              <Link to="#" className="text-gray-600 hover:text-gray-900">Contact</Link>
+              <Link to="#" className="text-gray-600 hover:text-gray-900">Privacy</Link>
+              <Link to="#" className="text-gray-600 hover:text-gray-900">Terms</Link>
             </div>
           </div>
         </div>
