@@ -26,10 +26,11 @@ export const TimeSelectionStep = ({
             variant={slot.selected ? "default" : "outline"}
             className="w-full"
             onClick={() => {
-              setRecommendedTimes(prev => prev.map((t, i) => ({
+              const newTimes = recommendedTimes.map((t, i) => ({
                 ...t,
                 selected: i === index
-              })));
+              }));
+              setRecommendedTimes(newTimes);
             }}
           >
             {slot.time}
