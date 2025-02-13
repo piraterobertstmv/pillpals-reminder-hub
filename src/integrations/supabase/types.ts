@@ -15,6 +15,7 @@ export type Database = {
           dosage: string
           frequency: string
           id: string
+          image_url: string | null
           name: string
           notes: string | null
           time_of_day: string[]
@@ -26,6 +27,7 @@ export type Database = {
           dosage: string
           frequency: string
           id?: string
+          image_url?: string | null
           name: string
           notes?: string | null
           time_of_day: string[]
@@ -37,6 +39,7 @@ export type Database = {
           dosage?: string
           frequency?: string
           id?: string
+          image_url?: string | null
           name?: string
           notes?: string | null
           time_of_day?: string[]
