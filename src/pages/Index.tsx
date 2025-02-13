@@ -65,7 +65,10 @@ const Index = () => {
             <Pill className="w-8 h-8 text-primary" />
             <span className="text-2xl font-bold">PillTime</span>
           </div>
-          <button className="btn-coral">Get Started</button>
+          <div className="flex gap-4">
+            <a href="/auth" className="text-gray-600 hover:text-gray-900">Sign In</a>
+            <a href="/auth" className="btn-coral">Get Started</a>
+          </div>
         </div>
       </header>
 
@@ -80,7 +83,7 @@ const Index = () => {
             you'll always have your medications on time.
           </p>
           <div className="pt-4">
-            <button className="btn-coral">Get Started</button>
+            <a href="/auth" className="btn-coral">Get Started</a>
           </div>
         </div>
       </section>
@@ -161,7 +164,7 @@ const Index = () => {
           <p className="text-xl text-gray-600 mb-8">
             No downloads or installations needed. Start using PillTime from your browser right now!
           </p>
-          <button className="btn-coral">Get Started</button>
+          <a href="/auth" className="btn-coral">Get Started</a>
         </div>
       </section>
 
