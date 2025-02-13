@@ -148,8 +148,8 @@ const AddMedication = () => {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-2xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold">Add Medication</h1>
+            <div className="flex justify-between items-center md:mt-0 mt-8">
+              <h1 className="text-3xl font-bold md:ml-0 ml-12">Add Medication</h1>
               <Button
                 onClick={() => navigate("/dashboard")}
                 variant="outline"
