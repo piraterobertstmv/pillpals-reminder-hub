@@ -26,6 +26,8 @@ serve(async (req) => {
       Deno.env.get('TWILIO_AUTH_TOKEN')
     )
 
+    const baseUrl = 'https://glfvydxxshkpdrrpvzxh.supabase.co/functions/v1/snooze-reminder'
+
     // Get all medications that need reminders
     const { data: medications, error: medicationsError } = await supabase
       .from('medications')
@@ -49,6 +51,10 @@ serve(async (req) => {
       try {
         // Send email reminder if enabled
         if (profile.email_reminder_enabled && profile.email) {
+          const snoozeLinks = [1, 3, 24].map(hours => 
+            `<a href="${baseUrl}?medicationId=${medication.id}&duration=${hours}" style="display: inline-block; margin: 5px; padding: 10px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 5px;">Snooze ${hours}h</a>`
+          ).join(' ')
+
           await resend.emails.send({
             from: 'PillTime <reminders@pilltime.app>',
             to: profile.email,
@@ -59,6 +65,10 @@ serve(async (req) => {
               <p>Dosage: ${medication.dosage}</p>
               ${medication.image_url ? `<img src="${medication.image_url}" alt="${medication.name}" style="max-width: 200px;" />` : ''}
               <p>Next reminder will be in ${medication.frequency}</p>
+              <div style="margin-top: 20px;">
+                <p>Need more time? Snooze this reminder:</p>
+                ${snoozeLinks}
+              </div>
             `,
           })
 
@@ -73,8 +83,12 @@ serve(async (req) => {
 
         // Send SMS reminder if enabled
         if (profile.sms_reminder_enabled && profile.phone_number) {
+          const snoozeLinkText = [1, 3, 24].map(hours => 
+            `${baseUrl}?medicationId=${medication.id}&duration=${hours} (${hours}h)`
+          ).join('\n')
+
           await twilioClient.messages.create({
-            body: `Time to take ${medication.name} (${medication.dosage}). Next reminder in ${medication.frequency}.`,
+            body: `Time to take ${medication.name} (${medication.dosage}). Next reminder in ${medication.frequency}.\n\nTo snooze, click:\n${snoozeLinkText}`,
             to: profile.phone_number,
             from: Deno.env.get('TWILIO_PHONE_NUMBER'),
           })
