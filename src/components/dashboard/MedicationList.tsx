@@ -62,7 +62,7 @@ export const MedicationList = ({ medications, onEdit, onDelete }: MedicationList
                 </Button>
               </TableCell>
             </TableRow>
-          )TableBody>
+          ))}
         </TableBody>
       </Table>
     </div>
