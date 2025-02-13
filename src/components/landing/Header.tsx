@@ -8,7 +8,7 @@ export const Header = () => (
     <div className="container mx-auto px-4 py-4 flex justify-between items-center">
       <div className="flex items-center gap-2">
         <Pill className="w-8 h-8 text-primary" />
-        <span className="text-2xl font-bold">PillTime</span>
+        <span className="text-2xl font-bold">PillPals</span>
       </div>
       <div className="flex gap-4 items-center">
         <Button asChild className="btn-coral">
