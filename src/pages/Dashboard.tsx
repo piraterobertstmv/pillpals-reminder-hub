@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { registerServiceWorker, subscribeToPushNotifications } from "@/lib/push-notifications";
 
 const Dashboard = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -54,6 +55,26 @@ const Dashboard = () => {
     return () => {
       supabase.removeChannel(reminderChannel);
     };
+  }, []);
+
+  useEffect(() => {
+    const setupPushNotifications = async () => {
+      try {
+        if ('Notification' in window) {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            await registerServiceWorker();
+            await subscribeToPushNotifications();
+            toast.success('Push notifications enabled');
+          }
+        }
+      } catch (error) {
+        console.error('Error setting up push notifications:', error);
+        toast.error('Failed to enable push notifications');
+      }
+    };
+
+    setupPushNotifications();
   }, []);
 
   useEffect(() => {
