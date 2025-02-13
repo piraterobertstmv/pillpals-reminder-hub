@@ -24,6 +24,7 @@ export const Sidebar = () => {
                 ? "bg-primary text-white"
                 : "text-gray-600 hover:bg-gray-100"
             }`}
+            aria-current={location.pathname === item.path ? "page" : undefined}
           >
             {item.icon}
             <span>{item.label}</span>
