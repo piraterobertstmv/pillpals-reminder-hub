@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { MedicationList } from "@/components/dashboard/MedicationList";
@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [medications, setMedications] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,8 +54,7 @@ const Dashboard = () => {
   }, [toast]);
 
   const handleEdit = (id: string) => {
-    // Will implement in the next step
-    console.log('Edit medication:', id);
+    navigate(`/dashboard/edit/${id}`);
   };
 
   const handleDelete = async (id: string) => {
