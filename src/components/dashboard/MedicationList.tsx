@@ -17,6 +17,8 @@ type Medication = {
   frequency: string;
   time_of_day: string[];
   notes: string | null;
+  next_reminder: string | null;
+  reminder_enabled: boolean;
 };
 
 type MedicationListProps = {
@@ -26,6 +28,11 @@ type MedicationListProps = {
 };
 
 export const MedicationList = ({ medications, onEdit, onDelete }: MedicationListProps) => {
+  const formatNextReminder = (date: string | null) => {
+    if (!date) return 'No reminder set';
+    return new Date(date).toLocaleString();
+  };
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -35,6 +42,7 @@ export const MedicationList = ({ medications, onEdit, onDelete }: MedicationList
             <TableHead>Dosage</TableHead>
             <TableHead>Frequency</TableHead>
             <TableHead>Time of Day</TableHead>
+            <TableHead>Next Reminder</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -45,6 +53,11 @@ export const MedicationList = ({ medications, onEdit, onDelete }: MedicationList
               <TableCell>{medication.dosage}</TableCell>
               <TableCell>{medication.frequency}</TableCell>
               <TableCell>{medication.time_of_day.join(", ")}</TableCell>
+              <TableCell>
+                {medication.reminder_enabled 
+                  ? formatNextReminder(medication.next_reminder)
+                  : 'Reminders disabled'}
+              </TableCell>
               <TableCell className="flex gap-2">
                 <Button
                   variant="outline"
