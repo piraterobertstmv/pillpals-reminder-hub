@@ -1,18 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PillPals - Never Forget Your Medication Again</title>
-    <meta name="description" content="PillPals helps you never forget your medication with friendly SMS and email reminders." />
+    <meta name="description" content="PillPals helps you never forget your medication with friendly push notifications." />
     <meta name="author" content="PillPals" />
-    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image" content="/icon(1).png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="icon(1).png">
   </head>
   <body>
+    <header class="flex items-center justify-between p-4 bg-gray-100">
+        <div class="flex items-center">
+            <img 
+                src="icon(1).png" 
+                alt="Website Logo" 
+                class="w-12 h-12"
+                aria-label="Company Logo"
+            />
+        </div>
+    </header>
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
