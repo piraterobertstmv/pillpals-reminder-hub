@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,6 +7,7 @@ import { MedicationList } from "@/components/dashboard/MedicationList";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dashboard = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const { toast: shadowToast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Subscribe to reminder history updates
   useEffect(() => {
@@ -118,31 +119,44 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex h-screen">
+    <div className="min-h-screen bg-gray-50" role="main">
+      <div className="flex flex-col md:flex-row h-screen">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-5xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8" tabIndex={-1}>
+          <div className="max-w-5xl mx-auto space-y-6 md:space-y-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                 Welcome back, {firstName || "User"}!
               </h1>
-              <Button asChild className="bg-coral hover:bg-coral/90">
+              <Button 
+                asChild 
+                className="bg-coral hover:bg-coral/90 w-full sm:w-auto"
+                aria-label="Add new medication"
+              >
                 <Link to="/dashboard/add">
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
                   Add Medication
                 </Link>
               </Button>
             </div>
 
             {loading ? (
-              <div className="text-center py-8">Loading...</div>
+              <div 
+                className="text-center py-8" 
+                role="status" 
+                aria-live="polite"
+              >
+                <span className="sr-only">Loading medications...</span>
+                Loading...
+              </div>
             ) : (
-              <MedicationList
-                medications={medications}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <MedicationList
+                  medications={medications}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              </div>
             )}
           </div>
         </main>
