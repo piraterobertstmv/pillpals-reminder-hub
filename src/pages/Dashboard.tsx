@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -124,7 +125,7 @@ const Dashboard = () => {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-4 md:p-8" tabIndex={-1}>
           <div className="max-w-5xl mx-auto space-y-6 md:space-y-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${isMobile ? "mt-12" : ""}`}>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                 Welcome back, {firstName || "User"}!
               </h1>
