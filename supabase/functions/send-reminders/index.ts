@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { Resend } from "npm:resend@2.0.0"
@@ -65,10 +66,24 @@ serve(async (req) => {
         if (pushSubscriptions && pushSubscriptions.length > 0) {
           for (const sub of pushSubscriptions) {
             const pushPayload = JSON.stringify({
-              title: "Pill Reminder",
-              body: `Time to take ${reminder.medication_name}! Dosage: ${reminder.dosage}`,
+              title: "🔔 Time for Your Medication!",
+              body: `It's time to take ${reminder.medication_name}! Click to mark as taken.`,
               url: "/dashboard",
-            })
+              sound: "/alarm.mp3",
+              tag: "medication-reminder",
+              renotify: true,
+              requireInteraction: true,
+              actions: [
+                {
+                  action: 'take',
+                  title: 'Take Now'
+                },
+                {
+                  action: 'snooze',
+                  title: 'Snooze 15min'
+                }
+              ]
+            });
 
             await webpush.sendNotification(sub, pushPayload)
           }
@@ -95,8 +110,13 @@ serve(async (req) => {
         await client.send({
           from: "PillPals <notifications@pillpals.com>",
           to: reminder.email_address,
-          subject: "Medication Reminder",
-          content: `Time to take your ${reminder.medication_name}!`,
+          subject: "🔔 URGENT: Time for Your Medication",
+          content: `Time to take your ${reminder.medication_name}!\n\nThis is an important reminder. Please take your medication now.`,
+          html: `
+            <h1>🔔 Time for Your Medication!</h1>
+            <h2>It's time to take ${reminder.medication_name}</h2>
+            <p>This is an important reminder. Please take your medication now.</p>
+          `
         });
 
         await client.close();
@@ -117,7 +137,7 @@ serve(async (req) => {
         ).join('\n')
 
         await twilioClient.messages.create({
-          body: `Time to take ${reminder.medication_name} (${reminder.dosage}). Next reminder in ${reminder.frequency}.\n\nTo snooze, click:\n${snoozeLinkText}`,
+          body: `🔔 URGENT: Time to take ${reminder.medication_name}! Please take your medication now.\n\nTo snooze, click:\n${snoozeLinkText}`,
           to: profile.phone_number,
           from: Deno.env.get('TWILIO_PHONE_NUMBER'),
         })

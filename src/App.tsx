@@ -53,6 +53,7 @@ const AppRoutes = () => {
       <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/dashboard/add" element={<ProtectedRoute><AddMedication /></ProtectedRoute>} />
+      <Route path="/dashboard/edit/:id" element={<ProtectedRoute><AddMedication /></ProtectedRoute>} />
       <Route path="/dashboard/medications" element={<ProtectedRoute><ViewMedications /></ProtectedRoute>} />
       <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
