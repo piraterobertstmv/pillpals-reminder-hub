@@ -183,6 +183,53 @@ export type Database = {
           },
         ]
       }
+      reminders: {
+        Row: {
+          created_at: string
+          days: string[]
+          email_address: string | null
+          email_notification: boolean | null
+          id: string
+          medication_name: string
+          push_notification: boolean | null
+          time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days: string[]
+          email_address?: string | null
+          email_notification?: boolean | null
+          id?: string
+          medication_name: string
+          push_notification?: boolean | null
+          time: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days?: string[]
+          email_address?: string | null
+          email_notification?: boolean | null
+          id?: string
+          medication_name?: string
+          push_notification?: boolean | null
+          time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vapid_keys: {
         Row: {
           created_at: string
