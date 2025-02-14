@@ -5,6 +5,7 @@ import { SchedulePreview } from "@/components/medication/SchedulePreview";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMedicationForm } from "@/hooks/useMedicationForm";
 import { MedicationNameStep } from "@/components/medication/form-steps/MedicationNameStep";
+import { DosesPerDayStep } from "@/components/medication/form-steps/DosesPerDayStep";
 import { FrequencyStep } from "@/components/medication/form-steps/FrequencyStep";
 import { DurationStep } from "@/components/medication/form-steps/DurationStep";
 import { TimeSelectionStep } from "@/components/medication/form-steps/TimeSelectionStep";
@@ -36,7 +37,7 @@ const AddMedication = () => {
       }
     };
 
-    const showPreview = currentStep > 2 && formData.name && formData.hoursBetween;
+    const showPreview = currentStep > 3 && formData.name && (formData.dosesPerDay === "1" || formData.hoursBetween);
     const selectedSchedule = recommendedTimes.find(t => t.selected);
 
     const slideVariants = {
@@ -95,33 +96,48 @@ const AddMedication = () => {
                     );
                   case 2:
                     return (
-                      <FrequencyStep
+                      <DosesPerDayStep
                         formData={formData}
                         setFormData={setFormData}
-                        onCalculateTimes={calculateRecommendedTimes}
                         onBack={handleBack}
-                        onNext={() => setCurrentStep(3)}
+                        onNext={() => {
+                          if (formData.dosesPerDay === "1") {
+                            setCurrentStep(4); // Skip frequency step for single dose
+                          } else {
+                            setCurrentStep(3);
+                          }
+                        }}
                       />
                     );
                   case 3:
                     return (
-                      <DurationStep
+                      <FrequencyStep
                         formData={formData}
                         setFormData={setFormData}
+                        onCalculateTimes={calculateRecommendedTimes}
                         onBack={handleBack}
                         onNext={() => setCurrentStep(4)}
                       />
                     );
                   case 4:
                     return (
-                      <TimeSelectionStep
-                        recommendedTimes={recommendedTimes}
-                        setRecommendedTimes={setRecommendedTimes}
+                      <DurationStep
+                        formData={formData}
+                        setFormData={setFormData}
                         onBack={handleBack}
                         onNext={() => setCurrentStep(5)}
                       />
                     );
                   case 5:
+                    return (
+                      <TimeSelectionStep
+                        recommendedTimes={recommendedTimes}
+                        setRecommendedTimes={setRecommendedTimes}
+                        onBack={handleBack}
+                        onNext={() => setCurrentStep(6)}
+                      />
+                    );
+                  case 6:
                     return (
                       <FinalStep
                         imagePreview={imagePreview}
@@ -161,10 +177,10 @@ const AddMedication = () => {
             </div>
 
             <motion.div className="flex justify-between mb-8">
-              {[1, 2, 3, 4, 5].map((step) => (
+              {[1, 2, 3, 4, 5, 6].map((step) => (
                 <motion.div
                   key={step}
-                  className={`w-1/5 h-2 rounded ${
+                  className={`w-1/6 h-2 rounded ${
                     step <= currentStep ? 'bg-coral' : 'bg-gray-200'
                   }`}
                   initial={false}

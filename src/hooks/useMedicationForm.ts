@@ -17,13 +17,34 @@ export const useMedicationForm = () => {
   
   const [formData, setFormData] = useState<MedicationFormData>({
     name: "",
+    dosesPerDay: "",
     hoursBetween: "",
     duration: "",
     durationType: "days"
   });
 
   const calculateRecommendedTimes = () => {
-    // This is now handled directly in the TimeSelectionStep component
+    if (!formData.hoursBetween) return;
+
+    const baseTime = "10:00"; // Default start time
+    const hours = parseInt(formData.hoursBetween);
+    const doses = parseInt(formData.dosesPerDay);
+    
+    const times: TimeSlot[] = [];
+    for (let i = 0; i < doses; i++) {
+      const time = new Date();
+      const [baseHour, baseMinute] = baseTime.split(':').map(Number);
+      time.setHours(baseHour + (i * hours));
+      time.setMinutes(baseMinute);
+      
+      times.push({
+        time: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+        selected: false,
+        days: ['1', '2', '3', '4', '5'] // Default to weekdays
+      });
+    }
+    
+    setRecommendedTimes(times);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,15 +120,18 @@ export const useMedicationForm = () => {
         imageUrl = publicUrl;
       }
 
-      const selectedSchedule = recommendedTimes[0];
+      // Get all time slots with their respective days
+      const timeSchedules = recommendedTimes
+        .filter(t => t.selected || formData.dosesPerDay === "1")
+        .map(t => t.time);
 
       const { error: insertError } = await supabase
         .from('medications')
         .insert({
           name: formData.name,
-          frequency: `Every ${formData.hoursBetween} hours`,
-          time_of_day: [selectedSchedule.time],
-          reminder_days: selectedSchedule.days,
+          frequency: formData.dosesPerDay === "1" ? "Once daily" : `Every ${formData.hoursBetween} hours`,
+          time_of_day: timeSchedules,
+          reminder_days: recommendedTimes[0].days,
           user_id: user.id,
           image_url: imageUrl,
           reminder_enabled: remindersEnabled,

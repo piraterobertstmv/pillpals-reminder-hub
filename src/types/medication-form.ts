@@ -7,6 +7,7 @@ export interface TimeSlot {
 
 export interface MedicationFormData {
   name: string;
+  dosesPerDay: string;
   hoursBetween: string;
   duration: string;
   durationType: "days" | "weeks" | "months";
