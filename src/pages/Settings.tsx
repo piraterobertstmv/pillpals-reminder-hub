@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState({
+    name: "",
     email: "",
     phone_number: "",
     email_reminder_enabled: true,
@@ -34,6 +35,7 @@ const Settings = () => {
 
         if (profile) {
           setSettings({
+            name: profile.name || "",
             email: profile.email || "",
             phone_number: profile.phone_number || "",
             email_reminder_enabled: profile.email_reminder_enabled,
@@ -64,6 +66,7 @@ const Settings = () => {
       const { error } = await supabase
         .from('profiles')
         .update({
+          name: settings.name,
           email: settings.email,
           phone_number: settings.phone_number,
           email_reminder_enabled: settings.email_reminder_enabled,
@@ -99,6 +102,17 @@ const Settings = () => {
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={settings.name}
+                    onChange={(e) => setSettings(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter your name"
+                  />
+                </div>
+
                 <div>
                   <Label htmlFor="email">Email Address</Label>
                   <Input

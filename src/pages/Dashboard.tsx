@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { registerServiceWorker, subscribeToPushNotifications } from "@/lib/push-notifications";
 
 const Dashboard = () => {
-  const [firstName, setFirstName] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [medications, setMedications] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast: shadowToast } = useToast();
@@ -84,12 +84,12 @@ const Dashboard = () => {
         if (user) {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('first_name')
+            .select('name')
             .eq('id', user.id)
             .single();
           
-          if (profile?.first_name) {
-            setFirstName(profile.first_name);
+          if (profile?.name) {
+            setUserName(profile.name);
           }
 
           const { data: meds, error } = await supabase
@@ -148,7 +148,7 @@ const Dashboard = () => {
           <div className="max-w-5xl mx-auto space-y-6 md:space-y-8">
             <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${isMobile ? "mt-12" : ""}`}>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                Welcome back, {firstName || "User"}!
+                Welcome back, {userName || "User"}!
               </h1>
               <Button 
                 asChild 
