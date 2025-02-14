@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SchedulePreview } from "@/components/medication/SchedulePreview";
@@ -133,6 +132,7 @@ const AddMedication = () => {
                       <TimeSelectionStep
                         recommendedTimes={recommendedTimes}
                         setRecommendedTimes={setRecommendedTimes}
+                        formData={formData}
                         onBack={handleBack}
                         onNext={() => setCurrentStep(6)}
                       />
